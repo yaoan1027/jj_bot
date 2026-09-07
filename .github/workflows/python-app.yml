@@ -1,0 +1,32 @@
+name: get stock price
+
+on:
+  schedule:
+    # 自動執行規則：對應台灣股市開盤時間 (周一至周五 09:00 - 14:00)
+    # GitHub 主機為 UTC 時區 (比台北慢 8 小時)，因此需換算為 01:00 - 06:00
+    - cron: "*/5 1-6 * * 1-5" 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 取得儲存庫中的程式碼 (升級至 v4 以避免舊版警告)
+      - name: Check out code
+        uses: actions/checkout@v4
+        
+      # 2. 設定 Python 環境 (升級至 v5 以避免舊版警告)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      
+      # 3. 安裝所需套件 (加入 yfinance 與 bs4)
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests bs4 yfinance
+          
+      # 4. 執行您的爬蟲程式 (檔名需與您上傳的 python 檔名一致，例如 test1.py)
+      - name: Run python script
+        run: python test1.py
